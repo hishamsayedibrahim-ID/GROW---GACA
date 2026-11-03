@@ -61,7 +61,9 @@ button,textarea{font:inherit;color:inherit}
 .cover h1{font-size:clamp(2.3rem,8vw,3.4rem);line-height:1.25}
 .cover .sub{font-size:1.25rem;font-weight:300}
 .cover .sub-en{font-size:.95rem;font-weight:300;color:var(--gray)}
-.story{font-weight:300;font-size:1.18rem;line-height:2;display:grid;gap:10px;background:var(--mint-tint);border-inline-start:6px solid var(--mint-deep);border-radius:var(--r-inner);padding:20px 24px}
+.story-wrap{display:flex;gap:20px;align-items:center}
+.story-wrap .av{width:112px;height:112px}
+.story{flex:1;min-width:0;font-weight:300;font-size:1.18rem;line-height:2;display:grid;gap:10px;background:var(--mint-tint);border-inline-start:6px solid var(--mint-deep);border-radius:var(--r-inner);padding:20px 24px}
 .goal-box{border-inline-start:2px solid var(--mint);padding-inline-start:16px}
 .goal-box h2{font-size:1.05rem;margin-bottom:2px;color:var(--blue)}
 .grow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;list-style:none;margin:0;padding:0}
@@ -80,6 +82,8 @@ button,textarea{font:inherit;color:inherit}
 .statusline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:24px;font-size:.92rem;color:var(--charcoal)}
 .trust{display:inline-flex;align-items:center;gap:8px}
 .trust b{color:var(--blue)}
+.av{display:block;border-radius:50%;flex-shrink:0;max-width:100%}
+.trust .av{width:52px;height:52px}
 .dots{display:inline-flex;gap:4px}
 .dots i{width:22px;height:6px;border-radius:3px;background:var(--cloud)}
 .dots i.on{background:var(--blue)}
@@ -91,7 +95,9 @@ button,textarea{font:inherit;color:inherit}
 .msg{max-width:88%;display:grid;gap:2px}
 .msg .who{font-size:.8rem;color:var(--charcoal);font-weight:700}
 .msg.me{justify-self:end;background:var(--cloud);border-radius:var(--r-inner) var(--r-inner) var(--r-inner) 4px;padding:10px 16px}
-.msg.her{justify-self:start}
+.msg.her{justify-self:start;grid-template-columns:44px minmax(0,1fr);column-gap:12px;align-items:start}
+.msg.her .av{width:44px;height:44px;margin-top:4px}
+.msg.her > div{display:grid;gap:2px;min-width:0}
 .msg.her .who{color:var(--blue)}
 .msg.her .txt{font-weight:300;font-size:1.22rem;line-height:1.9}
 
@@ -118,7 +124,8 @@ button,textarea{font:inherit;color:inherit}
 .fb.good .pill.good{background:var(--white)}
 .fb.trap .pill.trap{background:var(--white)}
 .fb h2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:1.15rem}
-.fb .shift{font-size:.9rem;color:var(--charcoal)}
+.fb .shift{font-size:.9rem;color:var(--charcoal);display:flex;align-items:center;gap:10px}
+.fb .shift .av{width:40px;height:40px}
 
 .fac{border:2px dashed var(--periwinkle);border-radius:var(--r-ctl);padding:12px 14px;font-size:.9rem;display:grid;gap:4px}
 .fac b{color:var(--periwinkle)}
@@ -128,7 +135,9 @@ button,textarea{font:inherit;color:inherit}
 .end{display:grid;gap:40px}
 .end-top{display:grid;gap:16px}
 .end-top h1{font-size:clamp(1.8rem,6vw,2.4rem)}
-.quote{position:relative;font-weight:300;font-size:1.3rem;color:var(--blue);background:var(--mint-tint);border:6px solid var(--mint-deep);border-radius:var(--r-panel);padding:24px 28px 22px}
+.quote-wrap{display:flex;gap:20px;align-items:center}
+.quote-wrap .av{width:104px;height:104px}
+.quote{flex:1;min-width:0;position:relative;font-weight:300;font-size:1.3rem;color:var(--blue);background:var(--mint-tint);border:6px solid var(--mint-deep);border-radius:var(--r-panel);padding:24px 28px 22px}
 .quote::before{content:"”";position:absolute;top:-6px;inset-inline-start:18px;font-size:3.4rem;line-height:1;color:var(--blue);transform:scaleX(-1)}
 .quote span{display:block;padding-top:18px}
 .score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -167,6 +176,8 @@ details .inner{margin-top:8px;color:var(--charcoal);display:grid;gap:6px}
 .foot{margin-top:44px;padding-top:12px;border-top:2px solid var(--cloud);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--charcoal)}
 
 @media (max-width:640px){
+  .story-wrap,.quote-wrap{flex-direction:column;align-items:stretch}
+  .story-wrap .av,.quote-wrap .av{width:88px;height:88px;align-self:center}
   .grow{grid-template-columns:repeat(2,minmax(0,1fr))}
   .three,.two{grid-template-columns:1fr}
   .msg{max-width:94%}
@@ -483,6 +494,9 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const val=(v,s)=> typeof v==="function" ? v(s) : v;
 const choicesFor=(id,s)=> NODES[id].choices.map(c=>(c.revisit && s.used[id] && c.alt) ? c.alt : c);
 const MOODS=["متحفّظة","حذرة","منفتحة","صريحة"];
+const AVATARS={"guarded": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 240\" role=\"img\" aria-label=\"سارة: متحفّظة\"><defs><clipPath id=\"c0\"><circle cx=\"120\" cy=\"120\" r=\"120\"/></clipPath></defs><g clip-path=\"url(#c0)\"><rect width=\"240\" height=\"240\" fill=\"#EBEBEB\"/><g transform=\"translate(0 -12)\"><path d=\"M20 262 L22 236 C30 200 68 180 120 178 C172 180 210 200 218 236 L220 262 Z\" fill=\"#140046\"/><path d=\"M108 182 L126 210 M132 182 L126 210\" stroke=\"#23EBA5\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"30\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"7\" rx=\"2\" fill=\"#1AB07C\"/><g transform=\"translate(0 4) rotate(0 120 120)\"><path d=\"M120 38 C82 38 64 68 64 104 C64 132 72 152 80 164 C68 176 58 190 56 206 Q120 226 184 206 C182 190 172 176 160 164 C168 152 176 132 176 104 C176 68 158 38 120 38 Z\" fill=\"#323C73\"/><ellipse cx=\"120\" cy=\"116\" rx=\"33\" ry=\"40\" fill=\"#D9A57E\"/><path d=\"M84 110 C82 76 100 62 120 62 C140 62 158 76 156 110 C152 90 140 80 120 80 C100 80 88 90 84 110 Z\" fill=\"#323C73\"/><path d=\"M90 92 C98 82 108 79 120 79 C132 79 142 82 150 92\" stroke=\"#5965EC\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M100 114 Q106 118 112 114\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M128 114 Q134 118 140 114\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M99 103 L112 106\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M141 103 L128 106\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M120 115 Q123 123 118 126\" stroke=\"#B9825C\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M110 136 Q120 134 130 137\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></g><path d=\"M50 214 C70 200 170 200 190 214 L196 262 L44 262 Z\" fill=\"#140046\"/><path d=\"M58 222 C84 208 156 208 182 222\" stroke=\"#323C73\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M62 234 C90 218 150 218 178 234\" stroke=\"#323C73\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"176\" cy=\"219\" rx=\"9\" ry=\"7\" fill=\"#D9A57E\"/><ellipse cx=\"64\" cy=\"230\" rx=\"9\" ry=\"7\" fill=\"#D9A57E\"/></g></g></svg>", "cautious": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 240\" role=\"img\" aria-label=\"سارة: حذرة\"><defs><clipPath id=\"c1\"><circle cx=\"120\" cy=\"120\" r=\"120\"/></clipPath></defs><g clip-path=\"url(#c1)\"><rect width=\"240\" height=\"240\" fill=\"#D3FBED\"/><g transform=\"translate(0 -12)\"><path d=\"M20 262 L22 236 C30 200 68 180 120 178 C172 180 210 200 218 236 L220 262 Z\" fill=\"#140046\"/><path d=\"M108 182 L126 210 M132 182 L126 210\" stroke=\"#23EBA5\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"30\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"7\" rx=\"2\" fill=\"#1AB07C\"/><g transform=\"translate(0 0) rotate(-4 120 120)\"><path d=\"M120 38 C82 38 64 68 64 104 C64 132 72 152 80 164 C68 176 58 190 56 206 Q120 226 184 206 C182 190 172 176 160 164 C168 152 176 132 176 104 C176 68 158 38 120 38 Z\" fill=\"#323C73\"/><ellipse cx=\"120\" cy=\"116\" rx=\"33\" ry=\"40\" fill=\"#D9A57E\"/><path d=\"M84 110 C82 76 100 62 120 62 C140 62 158 76 156 110 C152 90 140 80 120 80 C100 80 88 90 84 110 Z\" fill=\"#323C73\"/><path d=\"M90 92 C98 82 108 79 120 79 C132 79 142 82 150 92\" stroke=\"#5965EC\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"108\" cy=\"113\" rx=\"3.4\" ry=\"4\" fill=\"#140046\"/><ellipse cx=\"136\" cy=\"113\" rx=\"3.4\" ry=\"4\" fill=\"#140046\"/><path d=\"M98 102 Q105 99 112 102\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M128 100 Q135 95 142 99\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M120 115 Q123 123 118 126\" stroke=\"#B9825C\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M113 136 L127 136\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></g><rect x=\"90\" y=\"212\" width=\"60\" height=\"34\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"90\" y=\"212\" width=\"6\" height=\"34\" fill=\"#1AB07C\"/><ellipse cx=\"90\" cy=\"224\" rx=\"8\" ry=\"7\" fill=\"#D9A57E\"/><ellipse cx=\"150\" cy=\"224\" rx=\"8\" ry=\"7\" fill=\"#D9A57E\"/></g></g></svg>", "open": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 240\" role=\"img\" aria-label=\"سارة: منفتحة\"><defs><clipPath id=\"c2\"><circle cx=\"120\" cy=\"120\" r=\"120\"/></clipPath></defs><g clip-path=\"url(#c2)\"><rect width=\"240\" height=\"240\" fill=\"#59F0BB\"/><g transform=\"translate(0 -12)\"><path d=\"M20 262 L22 236 C30 200 68 180 120 178 C172 180 210 200 218 236 L220 262 Z\" fill=\"#140046\"/><path d=\"M108 182 L126 210 M132 182 L126 210\" stroke=\"#23EBA5\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"30\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"7\" rx=\"2\" fill=\"#1AB07C\"/><g transform=\"translate(0 0) rotate(3 120 120)\"><path d=\"M120 38 C82 38 64 68 64 104 C64 132 72 152 80 164 C68 176 58 190 56 206 Q120 226 184 206 C182 190 172 176 160 164 C168 152 176 132 176 104 C176 68 158 38 120 38 Z\" fill=\"#323C73\"/><ellipse cx=\"120\" cy=\"116\" rx=\"33\" ry=\"40\" fill=\"#D9A57E\"/><path d=\"M84 110 C82 76 100 62 120 62 C140 62 158 76 156 110 C152 90 140 80 120 80 C100 80 88 90 84 110 Z\" fill=\"#323C73\"/><path d=\"M90 92 C98 82 108 79 120 79 C132 79 142 82 150 92\" stroke=\"#5965EC\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"101\" cy=\"128\" r=\"6\" fill=\"#E8937A\" opacity=\".55\"/><circle cx=\"139\" cy=\"128\" r=\"6\" fill=\"#E8937A\" opacity=\".55\"/><ellipse cx=\"106\" cy=\"113\" rx=\"3.6\" ry=\"4.2\" fill=\"#140046\"/><ellipse cx=\"134\" cy=\"113\" rx=\"3.6\" ry=\"4.2\" fill=\"#140046\"/><path d=\"M97 101 Q105 97 113 100\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M127 100 Q135 97 143 101\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M120 115 Q123 123 118 126\" stroke=\"#B9825C\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M109 133 Q120 142 131 133\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></g><path d=\"M44 240 C50 222 60 214 72 212 L84 226 C74 232 66 236 62 240 Z\" fill=\"#140046\"/><path d=\"M70 206 C78 200 96 200 100 206 C98 212 86 216 76 214 C72 213 69 210 70 206 Z\" fill=\"#D9A57E\"/><path d=\"M78 204 L80 199 M86 203 L87 198 M93 204 L95 199\" stroke=\"#D9A57E\" stroke-width=\"4\" stroke-linecap=\"round\"/></g></g></svg>", "candid": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 240\" role=\"img\" aria-label=\"سارة: صريحة\"><defs><clipPath id=\"c3\"><circle cx=\"120\" cy=\"120\" r=\"120\"/></clipPath></defs><g clip-path=\"url(#c3)\"><rect width=\"240\" height=\"240\" fill=\"#23EBA5\"/><g transform=\"translate(0 -12)\"><path d=\"M20 262 L22 236 C30 200 68 180 120 178 C172 180 210 200 218 236 L220 262 Z\" fill=\"#140046\"/><path d=\"M108 182 L126 210 M132 182 L126 210\" stroke=\"#23EBA5\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"30\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"114\" y=\"208\" width=\"24\" height=\"7\" rx=\"2\" fill=\"#1AB07C\"/><g transform=\"translate(0 0) rotate(0 120 120)\"><path d=\"M120 38 C82 38 64 68 64 104 C64 132 72 152 80 164 C68 176 58 190 56 206 Q120 226 184 206 C182 190 172 176 160 164 C168 152 176 132 176 104 C176 68 158 38 120 38 Z\" fill=\"#323C73\"/><ellipse cx=\"120\" cy=\"116\" rx=\"33\" ry=\"40\" fill=\"#D9A57E\"/><path d=\"M84 110 C82 76 100 62 120 62 C140 62 158 76 156 110 C152 90 140 80 120 80 C100 80 88 90 84 110 Z\" fill=\"#323C73\"/><path d=\"M90 92 C98 82 108 79 120 79 C132 79 142 82 150 92\" stroke=\"#5965EC\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"101\" cy=\"128\" r=\"6\" fill=\"#E8937A\" opacity=\".55\"/><circle cx=\"139\" cy=\"128\" r=\"6\" fill=\"#E8937A\" opacity=\".55\"/><ellipse cx=\"106\" cy=\"114\" rx=\"3.8\" ry=\"4.4\" fill=\"#140046\"/><ellipse cx=\"134\" cy=\"114\" rx=\"3.8\" ry=\"4.4\" fill=\"#140046\"/><circle cx=\"107.3\" cy=\"112.4\" r=\"1.1\" fill=\"#FFFFFF\"/><circle cx=\"135.3\" cy=\"112.4\" r=\"1.1\" fill=\"#FFFFFF\"/><path d=\"M97 103 Q106 98 113 100\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M127 100 Q134 98 143 103\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M120 115 Q123 123 118 126\" stroke=\"#B9825C\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M110 134 Q121 140 130 133\" stroke=\"#140046\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></g><path d=\"M176 252 C170 236 158 222 142 214 L132 228 C146 234 154 244 158 252 Z\" fill=\"#140046\"/><path d=\"M142 214 L132 228\" stroke=\"#323C73\" stroke-width=\"2\"/><rect x=\"108\" y=\"204\" width=\"34\" height=\"24\" rx=\"11\" fill=\"#D9A57E\"/><path d=\"M113 206 L113 199 M121 205 L121 198 M129 205 L129 198 M136 206 L137 200\" stroke=\"#D9A57E\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g></svg>"};
+const AVKEYS=["guarded","cautious","open","candid"];
+const av=(i,alt)=>`<img class="av" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(AVATARS[AVKEYS[i]])}" alt="${alt===""?"":"سارة: "+MOODS[i]}" ${alt===""?'aria-hidden="true"':""} width="240" height="240">`;
 const moodOf=o=> o<=0?0 : o<=2?1 : o<=4?2 : 3;
 
 function compute(hist){
@@ -539,11 +553,11 @@ function tools(){
 function intro(){
   $("#app").innerHTML=`<div class="intro enter">
     <div class="cover"><span class="en" lang="en" dir="ltr">Interactive simulation · GROW coaching</span><h1>فخ النصيحة</h1><p class="sub">هل تستطيع أن تساعد موظفك، دون أن تحلّ المشكلة عنه؟</p><p class="sub-en" lang="en" dir="ltr">The Advice Trap · Can you coach without fixing?</p></div>
-    <div class="story">
+    <div class="story-wrap">${av(1)}<div class="story">
       <p>سارة من أفضل موظفيك منذ أربع سنوات.</p>
       <p>لكن في الأشهر الثلاثة الأخيرة تأخرت في موعدين، وجاء تقريرها الأخير بأخطاء، وصارت صامتة في الاجتماعات.</p>
       <p>طلبتَ جلسة معها لمدة ثلاثين دقيقة. وأنت تعرف تقريبًا ماذا يجب أن تفعل. لكن هل سيفيد أن تقول لها ذلك؟</p>
-    </div>
+    </div></div>
     <div class="goal-box"><h2>هدف التمرين</h2><p>أن تستخدم نموذج GROW لتساعد سارة على إيجاد حلها بنفسها، وأن تنتبه حين تجذبك الرغبة في النصيحة.</p></div>
     <ul class="grow" aria-label="مراحل الجلسة">
       <li><span class="num">01</span><b>الهدف</b><span>ماذا تريد؟</span></li>
@@ -571,14 +585,14 @@ function sim(focus){
       const all=CORE.filter(id=>NODES[id].area===a).every(id=>done.has(id));
       return `<li class="${a===cur?"now":all?"done":""}" ${a===cur?'aria-current="step"':""}>${AREAS[a].name}</li>`;}).join("")}</ol>
     <div class="statusline"><span>القرار ${Math.min(n+(st.waiting?0:1),12)} من 12</span>
-      <span class="trust">سارة الآن: <b>${MOODS[m]}</b><span class="dots" aria-hidden="true">${[0,1,2,3].map(i=>`<i class="${i<=m?"on":""}"></i>`).join("")}</span></span></div>`;
+      <span class="trust">${av(m,"")}<span>سارة الآن: <b>${MOODS[m]}</b></span></span></div>`;
 
   let last=null;
   h+=`<div class="chat">`+s.log.map(l=>{
     let sep=""; const key=l.area+(l.back?"b":"");
     if(key!==last){ sep=`<div class="sep">${AREAS[l.area].name}${l.back?" (رجوع)":""}</div>`; last=key; }
     return sep+`<div class="msg me"><span class="who">أنت</span><span>${esc(l.text)}</span></div>
-      <div class="msg her"><span class="who">سارة</span><span class="txt">${esc(l.reply)}</span></div>`;
+      <div class="msg her">${av(moodOf(l.to),"")}<div><span class="who">سارة</span><span class="txt">${esc(l.reply)}</span></div></div>`;
   }).join("")+`</div>`;
 
   if(st.waiting){
@@ -586,7 +600,7 @@ function sim(focus){
     h+=`<section class="card fb ${g?"good":"trap"} enter" aria-labelledby="fb-h">
       <h2 id="fb-h" tabindex="-1">${g?"أحسنت":"انتبه، هذا فخ"} ${pill(l.type)}</h2>
       <p>${esc(l.fb)}</p>
-      ${l.to!==l.from?`<p class="shift">${l.to>l.from?"زادت ثقة سارة بك.":"قلّت ثقة سارة بك."}</p>`:""}
+      ${l.to!==l.from?`<p class="shift">${av(moodOf(l.to))}<span>${l.to>l.from?"زادت ثقة سارة بك":"قلّت ثقة سارة بك"}${moodOf(l.to)!==moodOf(l.from)?`، وأصبحت ${MOODS[moodOf(l.to)]}`:""}.</span></p>`:""}
       ${st.fac?`<p class="facmeta">أثر الرد: ${Object.keys(l.d).filter(k=>l.d[k]).map(k=>DIMS[k].name+" "+sign(l.d[k])).join("، ")||"لا تغيير"}</p>`:""}
       <div class="row"><button class="btn primary" data-act="next">${s.node==="END"?"شاهد النتيجة":"التالي"}</button></div>
     </section>`;
@@ -627,7 +641,7 @@ function end(){
   $("#app").innerHTML=`<div class="end enter">
     <div class="end-top">
       <h1 id="end-h" tabindex="-1">انتهت الجلسة</h1>
-      <p class="quote"><span>${esc(quote.replace(/[«»]/g,""))}</span></p>
+      <div class="quote-wrap">${av(moodOf(s.open))}<p class="quote"><span>${esc(quote.replace(/[«»]/g,""))}</span></p></div>
       <div class="score"><span class="big">${s.good} من ${total}</span><span>من ردودك كانت كوتشينغ (سؤال قوي، إصغاء، أو دعم).</span></div>
       <div class="bar" role="img" aria-label="${s.good} كوتشينغ و${s.trap} فخ"><span style="width:${ratio*100}%"></span></div>
     </div>
