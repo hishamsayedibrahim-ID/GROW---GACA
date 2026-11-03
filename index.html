@@ -80,7 +80,7 @@ button,textarea{font:inherit;color:inherit}
 .steps li.done{border-color:var(--mint-deep);color:var(--navy)}
 .steps li.now{border-color:var(--blue);color:var(--blue);font-weight:700}
 .statusline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:24px;font-size:.92rem;color:var(--charcoal)}
-.trust{display:inline-flex;align-items:center;gap:8px}
+.trust{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .trust b{color:var(--blue)}
 .av{display:block;border-radius:50%;flex-shrink:0;max-width:100%}
 .trust .av{width:52px;height:52px}
@@ -585,7 +585,7 @@ function sim(focus){
       const all=CORE.filter(id=>NODES[id].area===a).every(id=>done.has(id));
       return `<li class="${a===cur?"now":all?"done":""}" ${a===cur?'aria-current="step"':""}>${AREAS[a].name}</li>`;}).join("")}</ol>
     <div class="statusline"><span>القرار ${Math.min(n+(st.waiting?0:1),12)} من 12</span>
-      <span class="trust">${av(m,"")}<span>سارة الآن: <b>${MOODS[m]}</b></span></span></div>`;
+      <span class="trust">${av(m,"")}<span>سارة الآن: <b>${MOODS[m]}</b></span><span class="dots" aria-hidden="true">${[0,1,2,3].map(i=>`<i class="${i<=m?"on":""}"></i>`).join("")}</span></span></div>`;
 
   let last=null;
   h+=`<div class="chat">`+s.log.map(l=>{
